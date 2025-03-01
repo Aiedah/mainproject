@@ -1,0 +1,54 @@
+from django.urls import path
+from . import views 
+from django.conf import settings
+from django.conf.urls.static import static
+
+
+
+urlpatterns = [
+    path('home/', views.home, name='home'),
+    path("user_login/", views.user_login, name="user_login"),
+    path("user_logout/", views.user_logout, name="user_logout"),
+    path('adminpanel/', views.adminpanel, name='adminpanel'),
+    
+    path('resident_panel/', views.resident_panel, name='resident_panel'),
+    path('resident_management/', views.resident_management, name='resident_management'),
+    path('view_flat/', views.view_flat, name='view_flat'),
+    path('view_residents/', views.view_residents, name='view_residents'),
+    
+    path('resident/delete/<int:resident_id>/', views.resident_delete, name='resident_delete'),
+
+    
+
+    path('resident/details/<int:resident_id>', views.resident_details, name='resident_details'),
+    path('generate_qr_code/', views.generate_qr_code, name='generate_qr_code'),
+    path('visitorscan/', views.visitorscan, name='visitorscan'),
+
+    path('add_resident2/', views.add_resident2, name='add_resident2'),
+    path('resident_panel/', views.resident_panel, name='resident_panel'),
+    path('vehicle_details/', views.vehicle_details, name='vehicle_details'),
+    path('add_vehicles/', views.add_vehicles, name='add_vehicles'),
+    path('add_flat/', views.add_flat, name='add_flat'),
+    path('visitor_entry/', views.visitor_entry, name='visitor_entry'),
+    #path('resident/edit/<int:resident_id>/', views.resident_edit, name='resident_edit'),
+   # path('adminadd-vehicle/<int:resident_id>/', views.adminadd_vehicle, name='adminadd_vehicle'),
+]
+
+
+   
+
+
+    
+    
+
+   
+
+
+
+ 
+    
+
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
