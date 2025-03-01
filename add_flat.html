@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Flat | VisitEase</title>
+    
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+        :root {
+            --primary: #2E86C1;
+            --secondary: #1B4F72;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .flat-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .flat-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .form-control {
+            height: 45px;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0px 0px 8px rgba(46, 134, 193, 0.3);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border: none;
+            font-size: 1rem;
+            padding: 10px 0;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--gray);
+            border: none;
+            padding: 10px 0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--dark);
+            transform: translateY(-2px);
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            justify-content: start;
+            gap: 10px;
+        }
+
+        .toggle-switch input {
+            width: 40px;
+            height: 20px;
+            appearance: none;
+            background: #ddd;
+            border-radius: 50px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .toggle-switch input:checked {
+            background: var(--primary);
+        }
+
+        .toggle-switch input::before {
+            content: "";
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            top: 1px;
+            left: 2px;
+            transition: 0.3s;
+        }
+
+        .toggle-switch input:checked::before {
+            transform: translateX(20px);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="flat-container">
+        <h2 class="flat-title">Add a New Flat</h2>
+
+        <!-- Display success or error messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="id_block_name" class="form-label">Block Name</label>
+                {{ form.block_name }}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_wing_name" class="form-label">Wing Name</label>
+                {{ form.wing_name }}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_floor" class="form-label">Floor</label>
+                {{ form.floor }}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_flat_number" class="form-label">Flat Number</label>
+                {{ form.flat_number }}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_size" class="form-label">Size (sq ft)</label>
+                {{ form.size }}
+            </div>
+
+            <!-- Toggle Switch for Occupied Status -->
+            <div class="mb-3 toggle-switch">
+                {{ form.occupied }}
+                <label for="id_occupied" class="form-check-label">Occupied</label>
+            </div>
+
+            <!-- Buttons -->
+            <button type="submit" class="btn btn-primary w-100 mt-3">Submit</button>
+            <a href="{% url 'view_flat' %}" class="btn btn-secondary w-100 mt-2">View Flats</a>
+        </form>
+    </div>
+
+</body>
+</html>
