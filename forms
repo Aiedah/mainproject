@@ -71,7 +71,7 @@ class VisitorForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['entry_time'].initial = now()'''  # Set entry time to current time
-from django import forms
+'''from django import forms
 from django.utils.timezone import now
 from .models import VisitorsLog
 
@@ -102,7 +102,61 @@ class VisitorForm(forms.ModelForm):
         instance.entry_time = now()  # Auto-set entry time
         if commit:
             instance.save()
+        return instance'''
+'''from django import forms
+from .models import VisitorsLog, FlatTab
+
+class VisitorForm(forms.ModelForm):
+    class Meta:
+        model = VisitorsLog
+        fields = [
+            'u_id', 'r_id', 'f_id', 'visitor_name', 'visitor_email', 
+            'phone_no', 'purpose_of_visit', 'group_size', 'entry_time', 
+            'exit_time', 'visitor_type', 'vehicle_number', 'make_and_model', 
+            'visitor_status'
+        ]
+        widgets = {
+            'entry_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'exit_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
+
+    # Optional: Customize flat selection
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['f_id'].queryset = FlatTab.objects.all()  # Ensure all flats are listed
+        self.fields['f_id'].required = False  # Make it optional (if needed)'''
+
+from django import forms
+from .models import VisitorsLog, FlatTab
+
+class VisitorForm(forms.ModelForm):
+    flat = forms.ModelChoiceField(
+        queryset=FlatTab.objects.all(),  # Keep functionality same as f_id
+        required=False,
+        label="Flat"  # Change label name
+    )
+
+    class Meta:
+        model = VisitorsLog
+        exclude = ['u_id', 'r_id', 'parking_slot', 'ad_approval_status', 'r_approval_status', 'f_id']  # Remove f_id
+        widgets = {
+            'entry_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'exit_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['flat'].queryset = FlatTab.objects.all()  # Ensure all flats are listed
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.f_id = self.cleaned_data.get('flat')  # Map 'flat' field back to f_id
+        if commit:
+            instance.save()
         return instance
+
+
+
 
 
 
@@ -265,4 +319,25 @@ class ResidentForm(forms.ModelForm):
 
         return resident
 
+from django import forms
+from .models import VehicleTab, ResidentTab
+
+class VehicleForm_admin(forms.ModelForm):
+    class Meta:
+        model = VehicleTab
+        fields = ['resident', 'vehicle_type', 'vehicle_number', 'make_and_model', 'color', 'parking_slot', 'v_status']
+        widgets = {
+            'resident': forms.Select(attrs={'class': 'form-control'}),  # Ensure dropdown is rendered
+            'vehicle_type': forms.Select(attrs={'class': 'form-control'}),
+            'vehicle_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'KA01AB1234'}),
+            'make_and_model': forms.TextInput(attrs={'class': 'form-control'}),
+            'color': forms.TextInput(attrs={'class': 'form-control'}),
+            'parking_slot': forms.TextInput(attrs={'class': 'form-control'}),
+            'v_status': forms.Select(choices=[('active', 'Active'), ('inactive', 'Inactive')], attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['resident'].queryset = ResidentTab.objects.all()  # Fetch all residents
+        self.fields['resident'].widget.attrs.update({'class': 'form-control'})  # Bootstrap style
 
